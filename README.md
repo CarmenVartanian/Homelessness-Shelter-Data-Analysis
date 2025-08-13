@@ -67,20 +67,21 @@ from homelessness_shelter_data;
 select dates from homelessness_shelter_data;
 ```
 -- Changing dates coulumn format 
+```sql
 update homelessness_shelter_data
 Set dates = to_date(dates, 'MM-DD-YY');
 
 select column_name, data_type from information_schema.columns
 where table_name ='homelessness_shelter_data';
-
+```
 -- Changing dates column type to date
-
+```sql
 Alter Table homelessness_shelter_data
 Alter column dates TYPE DATE
 Using dates :: DATE;
-
+```
 --3. Null Values or Blank Values
-
+```sql
 Select * from homelessness_shelter_data
 where shelter_name is Null or  shelter_name = ' ';
 
@@ -89,10 +90,10 @@ where city is null or city = ' ';
 
 Select * from homelessness_shelter_data
 where average_age is null ;
-
+```
 -- There isn't any null data exept in notes column, which is okay to saty as is.
 -- Exploratory Analysis
-
+```sql
 Select shelter_name, occupancy_rate, states, city
 from homelessness_shelter_data
 group by shelter_name, occupancy_rate, states, city
@@ -110,32 +111,36 @@ select states, SUM(occupied_beds)
 from homelessness_shelter_data
 group by states
 order by 2 DESC
+```
 -- CA has the highest occupied beds
-
+```sql
 select city, SUM(occupied_beds)
 from homelessness_shelter_data
 group by city, states
 Having states ILIKE 'CA'
 order by 2 DESC
+```
 -- Los Angeles in CA has the highest occupied beds.
-
+```sql
 select shelter_name, SUM(occupied_beds)
 from homelessness_shelter_data
 group by shelter_name
 order by 2 DESC
+```
 -- New Beginnings has the highest occupied beds
-
+```sql
 select MIN(dates), MAX(dates)
 from homelessness_shelter_data;
+```
 -- min date is 2023-07-30 and max date is 2025-07-29
-
+```sql
 select date_part('year', dates) as years, sum(occupied_beds)
 from homelessness_shelter_data
 group by years
 order by years DESC;
-
+```
 -- 2024 has the highest occupied beds. 
-
+```sql
 Select substring(TO_CHAR(dates, 'YYYY-MM-DD') from 6 For 2) AS months, sum(occupied_beds)
 from homelessness_shelter_data
 Group by months
@@ -152,9 +157,9 @@ Order by 1 ASC
 Select months, total_occupied,
 SUM(total_occupied) OVER(order by months) as rolling_total
 From Rolling_Total;
-
+```
 -- Rolling total of occupited beds
-
+```sql
 select shelter_name, Extract(YEAR FROM dates) AS years, sum(occupied_beds)
 From homelessness_shelter_data
 Group by shelter_name, Years
@@ -171,7 +176,7 @@ Select *,
 dense_Rank() over(partition by years order by occupied_beds DESC) as Ranking
 From shelter_year
 Order by Ranking ASC;
-
+```
 -- in 2023, Shelter Plus has the most occupied beds.
 -- in 2024, Harbor Home has the most occupied beds.
 -- in 2025, New Beginnings has the most occupied beds.
