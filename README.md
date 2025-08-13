@@ -2,6 +2,7 @@
 Homelessness &amp; Shelter Data from 2023 to 2025
 Data form https://www.kaggle.com/datasets/shamimhasan8/homelessness-and-shelter-data
 -- importing table
+```sql
 drop table if exists homelessness_shelter_data;
 Create table homelessness_shelter_data
 (
@@ -21,6 +22,7 @@ Create table homelessness_shelter_data
 		notes varchar (100)
 );
 select * from homelessness_shelter_data;
+```
 -- cleaning data
 -- 1. Remove Duplicates
 -- 2. Standardize the Data
@@ -29,7 +31,7 @@ select * from homelessness_shelter_data;
 
 
 -- 1. Remove Duplicates
-
+```sql
 with duplicates AS (
 	select *, 
 		Row_number() over (partition by dates, shelter_name, city, states, total_capacity, 
@@ -38,9 +40,11 @@ with duplicates AS (
 	from homelessness_shelter_data
 )
 Select * from duplicates where rn > 1;
+```
 
 -- There isn't any duplicates.
 -- 2. Standardize the data
+```sql
 Update homelessness_shelter_data
 SET shelter_name = trim(shelter_name);
 Update homelessness_shelter_data
@@ -61,7 +65,7 @@ from homelessness_shelter_data;
 select distinct (shelter_name)
 from homelessness_shelter_data;
 select dates from homelessness_shelter_data;
-
+```
 -- Changing dates coulumn format 
 update homelessness_shelter_data
 Set dates = to_date(dates, 'MM-DD-YY');
